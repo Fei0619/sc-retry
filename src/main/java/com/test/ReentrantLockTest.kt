@@ -4,6 +4,13 @@ import java.util.concurrent.locks.ReentrantLock
 
 /**
  * ReentrantLock是一个互斥锁，也是一个可重入锁
+ * Lock是接口，ReentrantLock是Lock的具体实现
+ * Lock和synchronized的区别：
+ *  1.synchronized可以给类、方法、代码块加锁，Lock只能给代码块加锁
+ *  2.synchronized不需要手动的获取锁和释放锁，发生异常时会自动释放锁不会造成死锁，
+ *    而Lock需要自己加锁和释放锁，使用不当可能会造成死锁
+ *  3.Lock可以知道有没有成功的获取锁，而synchronized不能
+ *
  * @author 费世程
  * @date 2020/7/15 19:56
  */
@@ -14,7 +21,7 @@ class Counter {
   companion object {
     private var count = 100
     /**
-     * ReentrantLock() 非公平锁
+     * ReentrantLock()             非公平锁
      * ReentrantLock(boolean fair) 公平锁
      */
     private val lock = ReentrantLock(true)
