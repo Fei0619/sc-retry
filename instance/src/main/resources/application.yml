@@ -1,0 +1,9 @@
+server:
+  port: 8005
+
+spring:
+  application:
+    name: SC-RETRY
+
+  profiles:
+    active: local

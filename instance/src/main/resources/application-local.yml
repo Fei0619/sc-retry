@@ -1,0 +1,17 @@
+eureka:
+client:
+  serviceUrl:
+    defaultZone: http://admin:123456@127.0.0.1:10001/eureka/
+
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: '123456'
+    database: 0
+    timeout: 1000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 1
