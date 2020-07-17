@@ -1,8 +1,8 @@
-package com.test.retry.stop
+package com.test.retry.rule.stop
 
-import com.test.retry.stop.impl.NeverStopRule
-import com.test.retry.stop.impl.StopAfterMaxAttemptRule
-import com.test.retry.stop.impl.StopAfterMaxWaitTimeRule
+import com.test.retry.rule.stop.impl.NeverStopRule
+import com.test.retry.rule.stop.impl.StopAfterMaxAttemptRule
+import com.test.retry.rule.stop.impl.StopAfterMaxWaitTimeRule
 import java.time.Duration
 
 /**

@@ -1,8 +1,8 @@
-package com.test.retry.lock
+package com.test.retry.rule.lock
 
-import com.test.retry.lock.impl.DistributeLockRule
-import com.test.retry.lock.impl.GeneralLockRule
-import com.test.retry.lock.impl.NoneLockRule
+import com.test.retry.rule.lock.impl.DistributeLockRule
+import com.test.retry.rule.lock.impl.GeneralLockRule
+import com.test.retry.rule.lock.impl.NoneLockRule
 import java.time.Duration
 import java.util.*
 import java.util.concurrent.locks.Lock

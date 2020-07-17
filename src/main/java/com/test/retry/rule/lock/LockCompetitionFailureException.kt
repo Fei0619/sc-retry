@@ -1,4 +1,4 @@
-package com.test.retry.lock
+package com.test.retry.rule.lock
 
 /**
  * 锁竞争失败异常

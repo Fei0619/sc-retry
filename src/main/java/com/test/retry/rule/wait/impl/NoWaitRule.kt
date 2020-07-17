@@ -1,6 +1,6 @@
-package com.test.retry.wait.impl
+package com.test.retry.rule.wait.impl
 
-import com.test.retry.wait.WaitRule
+import com.test.retry.rule.wait.WaitRule
 
 /**
  * 不等待

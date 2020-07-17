@@ -1,4 +1,4 @@
-package com.test.retry.lock
+package com.test.retry.rule.lock
 
 /**
  * @author 费世程

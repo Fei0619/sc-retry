@@ -1,6 +1,6 @@
-package com.test.retry.wait
+package com.test.retry.rule.wait
 
-import com.test.retry.wait.impl.*
+import com.test.retry.rule.wait.impl.*
 
 /**
  * 等待策略

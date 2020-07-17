@@ -1,7 +1,7 @@
-package com.test.retry.lock.impl
+package com.test.retry.rule.lock.impl
 
-import com.test.retry.lock.LockRule
-import com.test.retry.lock.LockTypeEnum
+import com.test.retry.rule.lock.LockRule
+import com.test.retry.rule.lock.LockTypeEnum
 import java.util.concurrent.locks.Lock
 
 /**

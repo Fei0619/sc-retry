@@ -1,6 +1,6 @@
-package com.test.retry.stop.impl
+package com.test.retry.rule.stop.impl
 
-import com.test.retry.stop.StopRule
+import com.test.retry.rule.stop.StopRule
 
 /**
  * 不停止，一直重试
