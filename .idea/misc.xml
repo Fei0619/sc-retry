@@ -14,6 +14,7 @@
   <component name="SuppressABINotification">
     <option name="modulesWithSuppressedNotConfigured">
       <set>
+        <option value="instance" />
         <option value="sc-retry" />
       </set>
     </option>

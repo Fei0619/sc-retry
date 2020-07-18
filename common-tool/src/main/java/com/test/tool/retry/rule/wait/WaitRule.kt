@@ -1,6 +1,7 @@
 package com.test.tool.retry.rule.wait
 
 import com.test.tool.retry.rule.wait.impl.*
+import java.time.Duration
 
 /**
  * 等待策略
@@ -21,14 +22,14 @@ interface WaitRule {
     /**
      * 固定时长等待策略
      */
-    fun fixTimeIntervalWait(timeInterval: Long): WaitRule {
+    fun fixTimeIntervalWait(timeInterval: Duration): WaitRule {
       return FixTimeIntervalWaitRule(timeInterval)
     }
 
     /**
      * 递增时长等待策略
      */
-    fun incrementWait(initial: Long, step: Long): WaitRule {
+    fun incrementWait(initial: Duration, step: Duration): WaitRule {
       return IncrementWaitRule(initial, step)
     }
 
