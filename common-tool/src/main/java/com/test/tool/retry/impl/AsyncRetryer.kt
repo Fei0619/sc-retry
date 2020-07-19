@@ -27,7 +27,7 @@ class AsyncRetryer<R> internal constructor(private var executorService: Executor
 
   private val countDownLatch = CountDownLatch(1)
   /** 是否被锁 */
-  private var locked = false
+  private var locked = true
   /** 分布式锁key */
   private var lockKey: String? = null
   /** 分布式锁value */
@@ -37,7 +37,7 @@ class AsyncRetryer<R> internal constructor(private var executorService: Executor
   /** 已重试次数 */
   private var attemptTimes = 0
   /** 分布式锁超时时间 */
-  private var dLockTimeout: Duration? = null
+  private var dLockTimeout = Duration.ZERO
   /** 是否释放锁 */
   private var unlock = false
   /** 普通锁 */
@@ -47,8 +47,11 @@ class AsyncRetryer<R> internal constructor(private var executorService: Executor
   /** 执行结果 */
   private var result: R? = null
 
+  private var executeTimes = 0
+
   override fun execute(): Future<R> {
     require(task != null) { "执行任务不能为空！" }
+    require(executeTimes++ == 0) { "不能重复执行！" }
     when (lockRule.getLockType()) {
       //不加锁
       LockTypeEnum.NONE -> {
@@ -129,12 +132,12 @@ class AsyncRetryer<R> internal constructor(private var executorService: Executor
 
   override fun run() {
     val delay = waitRule.delayMillis()
-    if (lockKey != null && lockValue != null) {
-      //使用了分布式锁，给锁续期
-      calculateDelayMillis()
-      cache!!.expire(lockKey!!, dLockTimeout!!).block()
-    }
     try {
+      if (lockKey != null && lockValue != null) {
+        //使用了分布式锁，给锁续期
+        calculateDelayMillis(delay)
+        cache!!.expire(lockKey!!, dLockTimeout!!).block()
+      }
       result = this.task!!.call()
       resloveResource()
     } catch (e: Exception) {
@@ -201,10 +204,10 @@ class AsyncRetryer<R> internal constructor(private var executorService: Executor
   /**
    * 计算本次分布式锁超时时间
    */
-  private fun calculateDelayMillis() {
+  private fun calculateDelayMillis(delayMillis: Long) {
     if (LockTypeEnum.DISTRIBUTED == lockRule.getLockType()) {
-      val lock = lockRule.getLock() as DistributeLockRule
-      dLockTimeout = Duration.ofMillis(System.currentTimeMillis() + lock.maxExecuteTime.toMillis() + 5000L)
+      val lock = lockRule as DistributeLockRule
+      dLockTimeout = Duration.ofMillis(delayMillis + lock.maxExecuteTime.toMillis() + 5000L)
     }
   }
 
