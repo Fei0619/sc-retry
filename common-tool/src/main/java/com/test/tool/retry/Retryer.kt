@@ -7,7 +7,6 @@ import com.test.tool.retry.rule.lock.LockRule
 import com.test.tool.retry.rule.stop.StopRule
 import com.test.tool.retry.rule.wait.WaitRule
 import reactor.core.publisher.Mono
-import java.awt.dnd.DropTargetAdapter
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
@@ -18,11 +17,12 @@ import java.util.concurrent.Future
  * @author 费世程
  * @date 2020/7/16 16:23
  */
+@SuppressWarnings("unused")
 interface Retryer<R, FR> {
 
   companion object {
     /** 异步重试器 */
-    fun <R> asyncRetyer(executorService: ExecutorService): Retryer<R, Future<R>> {
+    fun <R> asyncRetyer(executorService: ExecutorService): Retryer<R, Future<R?>> {
       return AsyncRetryer(executorService)
     }
 
@@ -32,7 +32,7 @@ interface Retryer<R, FR> {
     }
 
     /** 反应式重试器 */
-    fun <R> reactiveRetryer(): Retryer<R, Mono<R>> {
+    fun <R> reactiveRetryer(): Retryer<Mono<R>, Mono<R?>> {
       return ReactiveRetryer()
     }
   }

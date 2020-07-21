@@ -1,7 +1,11 @@
+#logging:
+#  config: classpath:logback-spring-dev.xml
+
 eureka:
-client:
-  serviceUrl:
-    defaultZone: http://admin:123456@127.0.0.1:10001/eureka/
+  client:
+    serviceUrl:
+      defaultZone: http://admin:123456@127.0.0.1:10001/eureka/
+    register-with-eureka: true
 
 spring:
   redis:

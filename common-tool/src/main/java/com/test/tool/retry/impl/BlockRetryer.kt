@@ -18,7 +18,7 @@ import java.util.concurrent.locks.Lock
  * @author 费世程
  * @date 2020/7/17 16:21
  */
-class BlockRetryer<R> : AbstractRetryer<R, Optional<R>>() {
+class BlockRetryer<R> internal constructor() : AbstractRetryer<R, Optional<R>>() {
 
   private val log = LoggerFactory.getLogger(BlockRetryer::class.java)
 

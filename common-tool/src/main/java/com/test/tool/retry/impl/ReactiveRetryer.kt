@@ -16,14 +16,14 @@ import java.util.concurrent.locks.Lock
  * @author 费世程
  * @date 2020/7/17 16:22
  */
-class ReactiveRetryer<R> : AbstractRetryer<Mono<R>, Mono<R>>() {
+class ReactiveRetryer<R> internal constructor() : AbstractRetryer<Mono<R>, Mono<R?>>() {
 
   private val log = LoggerFactory.getLogger(ReactiveRetryer::class.java)
   private var lock: Lock? = null
   private var dLockTimeout = Duration.ZERO
   private var attemptTimes = 0
 
-  override fun execute(): Mono<R> {
+  override fun execute(): Mono<R?> {
     return doExecute().doOnError {
       if (it is LockCompetitionFailureException) {
         log.debug("锁竞争失败...")
@@ -31,7 +31,7 @@ class ReactiveRetryer<R> : AbstractRetryer<Mono<R>, Mono<R>>() {
     }
   }
 
-  private fun doExecute(): Mono<R> {
+  private fun doExecute(): Mono<R?> {
     when (lockRule.getLockType()) {
       LockTypeEnum.NONE -> {
         //没加锁，直接执行
@@ -73,7 +73,7 @@ class ReactiveRetryer<R> : AbstractRetryer<Mono<R>, Mono<R>>() {
    * @param lockKey 分布式锁key
    * @return Mono<R>
    */
-  private fun doExecute(lockKey: String?): Mono<R> {
+  private fun doExecute(lockKey: String?): Mono<R?> {
     require(task != null) { "任务不能为空！" }
     return task!!.call().onErrorResume { throwable ->
       var needRetry = false

@@ -8,6 +8,7 @@ import com.test.tool.retry.rule.lock.LockTypeEnum
 import com.test.tool.retry.rule.lock.impl.DistributeLockRule
 import com.test.tool.retry.rule.lock.impl.GeneralLockRule
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.lang.RuntimeException
 import java.lang.UnsupportedOperationException
 import java.time.Duration
@@ -21,7 +22,7 @@ import java.util.concurrent.locks.Lock
  * @date 2020/7/16 20:00
  */
 class AsyncRetryer<R> internal constructor(private var executorService: ExecutorService? = Executors.newSingleThreadExecutor())
-  : AbstractRetryer<R, Future<R>>(), RunnableFuture<R>, Delayed {
+  : AbstractRetryer<R, Future<R?>>(), RunnableFuture<R?>, Delayed {
 
   private val log = LoggerFactory.getLogger(AsyncRetryer::class.java)
 
@@ -49,9 +50,9 @@ class AsyncRetryer<R> internal constructor(private var executorService: Executor
 
   private var executeTimes = 0
 
-  override fun execute(): Future<R> {
+  override fun execute(): Future<R?> {
     require(task != null) { "执行任务不能为空！" }
-    require(executeTimes++ == 0) { "不能重复执行！" }
+//    require(executeTimes++ == 0) { "不能重复执行！" }
     when (lockRule.getLockType()) {
       //不加锁
       LockTypeEnum.NONE -> {
@@ -155,6 +156,7 @@ class AsyncRetryer<R> internal constructor(private var executorService: Executor
         if (stopRule.stopRetry()) {
           //停止重试
           log.debug("已达失败重试上限，重试次数 --> $attemptTimes")
+          System.err.println("已达失败重试上限，重试次数 --> $attemptTimes")
           if (finalFailureFallBack != null) {
             finalFailureFallBack!!.call()
           } else {
@@ -211,30 +213,33 @@ class AsyncRetryer<R> internal constructor(private var executorService: Executor
     }
   }
 
-  /**
-   * 延时队列
-   */
-  internal object AsyncDelayQueue : Initialize, Destroy {
-    internal val delayQueue = DelayQueue<AsyncRetryer<*>>()
-    @Volatile
-    private var flag = true
-    private var executeThread: Thread? = null
+}
+
+/**
+ * 延时队列
+ */
+@Component
+internal object AsyncDelayQueue : Initialize, Destroy {
+  internal val delayQueue = DelayQueue<AsyncRetryer<*>>()
+  @Volatile
+  private var flag = true
+  private var executeThread: Thread? = null
 
 
-    override fun init() {
-      while (flag) {
-        executeThread = Thread {
-          if (delayQueue.size > 0) {
-            delayQueue.poll(3, TimeUnit.SECONDS)?.execute()
-          }
+  override fun init() {
+    System.err.println("初始化...")
+    while (flag) {
+      executeThread = Thread {
+        if (delayQueue.size > 0) {
+          delayQueue.poll(3, TimeUnit.SECONDS)?.execute()
         }
-        executeThread!!.start()
       }
+      executeThread!!.start()
     }
+  }
 
-    override fun toDestroy() {
-      flag = false
-    }
+  override fun toDestroy() {
+    flag = false
   }
 
 }
